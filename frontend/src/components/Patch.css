@@ -1,11 +1,11 @@
 .Patch {
   z-index: 1;
   align-content: flex-end;
+  height: 100%;
   width: 100%;
   margin-top: 48%;
   display: flex;
   justify-content: space-around;
-  align-items: center;
 }
 
 .Launch {
@@ -41,6 +41,7 @@
   letter-spacing: 1px;
   user-select: none;
   -webkit-user-select: none;
+  padding-top: 6px;
 }
 
 .ProgressActionText {
