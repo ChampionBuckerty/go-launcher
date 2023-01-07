@@ -55,4 +55,4 @@ jobs:
       #   env:
       #     GH_TOKEN: "${{ secrets.PRIVATE_TOKEN }}"
       #   run: |
-      #     gh release create v0.0.17 Launcher-windows-amd64.zip -R https://github.com/blurnos/nos-launcher
+      #     gh release create v0.0.18 Launcher-windows-amd64.zip -R https://github.com/blurnos/nos-launcher

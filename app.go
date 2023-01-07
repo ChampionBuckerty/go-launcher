@@ -38,8 +38,8 @@ func (a *App) domReady(ctx context.Context) {
 func (a *App) UpdateCheckUI() {
 	shouldUpdate, _ := internal.CheckForUpdate()
 	if shouldUpdate {
-		buttons := []string{"Proceed"}
-		dialogOpts := runtime.MessageDialogOptions{Title: "Update Available", Message: "New Launcher Version Available, You must update to continue", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Proceed"}
+		buttons := []string{"Ok"}
+		dialogOpts := runtime.MessageDialogOptions{Title: "Update Available", Message: "New Launcher Version Available, You must update to continue", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
 
 		action, err := runtime.MessageDialog(a.ctx, dialogOpts)
 		if err != nil {
@@ -47,7 +47,7 @@ func (a *App) UpdateCheckUI() {
 		}
 
 		runtime.LogInfo(a.ctx, action)
-		if action == "Yes" {
+		if action == "Ok" {
 			runtime.LogInfo(a.ctx, "Update clicked")
 			updated := internal.DoSelfUpdate()
 			buttons = []string{"Ok"}
