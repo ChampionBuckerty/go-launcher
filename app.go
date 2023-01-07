@@ -39,7 +39,7 @@ func (a *App) UpdateCheckUI() {
 	shouldUpdate, _ := internal.CheckForUpdate()
 	if shouldUpdate {
 		buttons := []string{"Ok"}
-		dialogOpts := runtime.MessageDialogOptions{Title: "Update Available", Message: "New Launcher Version Available, You must update to continue", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
+		dialogOpts := runtime.MessageDialogOptions{Title: "Update Required", Message: "New Launcher Version Available, You must update to continue", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
 
 		action, err := runtime.MessageDialog(a.ctx, dialogOpts)
 		if err != nil {
@@ -53,7 +53,7 @@ func (a *App) UpdateCheckUI() {
 			buttons = []string{"Ok"}
 
 			if updated {
-				dialogOpts = runtime.MessageDialogOptions{Title: "Update Succeeded", Message: "Update Successful. Please restart this app to take effect.", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
+				dialogOpts = runtime.MessageDialogOptions{Title: "Update Succeeded", Message: "Update Successful. Please restart the launcher.", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
 			} else {
 				dialogOpts = runtime.MessageDialogOptions{Title: "Update Error", Message: "Update failed, please report this on Nostalgia Discord.", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
 			}
