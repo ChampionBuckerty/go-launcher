@@ -1,6 +1,7 @@
 // import axios from "axios";
 import * as React from 'react'
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
+import { LaunchGame } from '../../wailsjs/go/main/App'
 import './Patch.css'
 import ProgressBar from './ProgressBar'
 // import AdmZip from "adm-zip";
@@ -13,13 +14,13 @@ import ProgressBar from './ProgressBar'
 
 const Patch: React.FunctionComponent = () => {
   const [percentage, setPercentage] = useState<number>(0)
-  const [availablePatches, setAvailablePatches] = useState<string[] | null>(
-    null,
-  )
+  // const [availablePatches, setAvailablePatches] = useState<string[] | null>(
+  //   null,
+  // )
   const [fullyPatched, setFullyPatched] = useState<boolean>(false)
   const [currentAction, setCurrentAction] = useState<string>('')
-  const [lastPatchLength, setLastPatchLength] = useState<number>()
-  const [totalPatchLength, setTotalPatchLength] = useState<number>()
+  // const [lastPatchLength, setLastPatchLength] = useState<number>()
+  // const [totalPatchLength, setTotalPatchLength] = useState<number>()
   const [bypassClickCounter, setBypassClickCounter] = useState<number>(0)
   // const currentVersion = IniManager.fetchGameVersion()
 
@@ -201,7 +202,7 @@ const Patch: React.FunctionComponent = () => {
         <div className="ProgressActionText">{currentAction}</div>
       </div>
       <button
-        // onClick={launchGame}
+        onClick={LaunchGame}
         className={`Launch ${fullyPatched ? '' : 'disabled'}`}
       >
         Launch Game

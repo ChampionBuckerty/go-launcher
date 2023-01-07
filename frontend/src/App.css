@@ -11,7 +11,7 @@ body,
 .MainWindow {
   /* background: url('../../resources/images/bg-closeup2.png') no-repeat center
     center fixed; */
-  background: url("./assets/images/hollna-waterfall.png") no-repeat center;
+  background: url('./assets/images/hollna-waterfall.png') no-repeat center;
   background-size: cover;
   height: 100%;
   width: 100%;
@@ -26,6 +26,8 @@ body,
   z-index: 1;
   position: relative;
   user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
 }
 
 .Background_Overlay {
@@ -52,6 +54,7 @@ body,
   margin-top: 12px;
   cursor: pointer;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .Settings:hover {

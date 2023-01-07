@@ -19,6 +19,7 @@
   letter-spacing: 1px;
   cursor: pointer;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .Launch:hover {
@@ -40,6 +41,7 @@
   align-items: center;
   letter-spacing: 1px;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .ProgressActionText {
