@@ -44,17 +44,21 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: launcher-windows
-      - name: Create Release
-        id: create_release
-        uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Create Release With Asset
+        id: Release-AIO
+        uses: Hs1r1us/Release-AIO@v2.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          files: Launcher*.zip
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Publish
+          tag_name: ${{ github.ref }}
+          asset_files: "./Launcher-windows-amd64.zip"
+      - name: Duplicate Release With Asset to public_Repo
+        id: Release-AIO
+        uses: Hs1r1us/Release-AIO@v2.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.PRIVATE_TOKEN }}
-        shell: bash
-        run: ./scripts/clone-to-repo.sh
+        with:
+          tag_name: "inherit"
+          body: "Blank"
+          repo: "blurnos/nos-launcher"
+          asset_files: "./Launcher-windows-amd64.zip"
