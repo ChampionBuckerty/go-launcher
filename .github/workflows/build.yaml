@@ -53,6 +53,6 @@ jobs:
           files: Launcher*.zip
       - name: Publish
         env:
-          GITHUB_TOKEN: "${{ secrets.PRIVATE_TOKEN }}"
+          GH_TOKEN: "${{ secrets.PRIVATE_TOKEN }}"
         run: |
-          gh release create v0.0.15 Launcher-windows-amd64.zip -R https://github.com/blurnos/nos-launcher
+          gh release create v0.0.16 Launcher-windows-amd64.zip -R https://github.com/blurnos/nos-launcher
