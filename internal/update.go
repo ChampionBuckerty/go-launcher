@@ -7,11 +7,11 @@ import (
 	"github.com/rhysd/go-github-selfupdate/selfupdate"
 )
 
-const Version = "0.0.16"
+const Version = "0.0.17"
 
 func DoSelfUpdate() bool {
 	v := semver.MustParse(Version)
-	latest, err := selfupdate.UpdateSelf(v, "ChampionBuckerty/go-launcher")
+	latest, err := selfupdate.UpdateSelf(v, "blurnos/nos-launcher")
 	if err != nil {
 		log.Println("Binary update failed:", err)
 		return false
@@ -28,7 +28,7 @@ func DoSelfUpdate() bool {
 }
 
 func CheckForUpdate() (bool, string) {
-	latest, found, err := selfupdate.DetectLatest("ChampionBuckerty/go-launcher")
+	latest, found, err := selfupdate.DetectLatest("blurnos/nos-launcher")
 	if err != nil {
 		log.Println("Error occurred while detecting version:", err)
 		return false, ""

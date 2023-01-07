@@ -51,8 +51,8 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: Launcher*.zip
-      - name: Publish
-        env:
-          GH_TOKEN: "${{ secrets.PRIVATE_TOKEN }}"
-        run: |
-          gh release create v0.0.16 Launcher-windows-amd64.zip -R https://github.com/blurnos/nos-launcher
+      # - name: Publish
+      #   env:
+      #     GH_TOKEN: "${{ secrets.PRIVATE_TOKEN }}"
+      #   run: |
+      #     gh release create v0.0.17 Launcher-windows-amd64.zip -R https://github.com/blurnos/nos-launcher
