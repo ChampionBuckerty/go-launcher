@@ -30,4 +30,6 @@ func (a *App) LaunchGame() {
 		runtime.LogError(a.ctx, "Error occured launching game \n")
 		runtime.LogFatal(a.ctx, err.Error())
 	}
+
+	a.CloseApp()
 }

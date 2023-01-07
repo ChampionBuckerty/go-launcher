@@ -10,12 +10,6 @@ function App() {
       <XMark />
       <img className="Logo" src={Logo} />
       <Patch />
-      <button
-        // onClick={() => ipcRenderer.invoke("settingsWindow:show")}
-        className="Settings"
-      >
-        Settings
-      </button>
     </div>
   )
 }

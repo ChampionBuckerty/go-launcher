@@ -201,12 +201,22 @@ const Patch: React.FunctionComponent = () => {
         <ProgressBar percentage={percentage} />
         <div className="ProgressActionText">{currentAction}</div>
       </div>
-      <button
-        onClick={LaunchGame}
-        className={`Launch ${fullyPatched ? '' : 'disabled'}`}
-      >
-        Launch Game
-      </button>
+      <div className="LaunchContainer">
+        <button
+          onClick={LaunchGame}
+          className={`Launch ${fullyPatched ? '' : 'disabled'}`}
+        >
+          Launch Game
+        </button>
+        <div>
+          <button
+            // onClick={() => ipcRenderer.invoke("settingsWindow:show")}
+            className="Settings"
+          >
+            Settings
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
