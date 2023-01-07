@@ -1,6 +1,6 @@
 // import axios from "axios";
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { LaunchGame } from '../../wailsjs/go/main/App'
 import './Patch.css'
 import ProgressBar from './ProgressBar'
@@ -18,17 +18,21 @@ const Patch: React.FunctionComponent = () => {
   //   null,
   // )
   const [fullyPatched, setFullyPatched] = useState<boolean>(false)
+  const [launching, setLaunching] = useState<boolean>(false)
   const [currentAction, setCurrentAction] = useState<string>('')
   // const [lastPatchLength, setLastPatchLength] = useState<number>()
   // const [totalPatchLength, setTotalPatchLength] = useState<number>()
   const [bypassClickCounter, setBypassClickCounter] = useState<number>(0)
   // const currentVersion = IniManager.fetchGameVersion()
 
-  // const launchGame = useCallback(() => {
-  //   if (fullyPatched) {
-  //     LaunchGame(remote?.getCurrentWindow())
-  //   }
-  // }, [remote, fullyPatched])
+  const launchGame = useCallback(() => {
+    if (launching) return
+
+    if (fullyPatched) {
+      setLaunching(true)
+      LaunchGame()
+    }
+  }, [fullyPatched, setLaunching, launching])
 
   // const downloadAndUnzipPatch = async () => {
   //   const eachFileMaxPercent = 100.0 / totalPatchLength;
@@ -203,7 +207,7 @@ const Patch: React.FunctionComponent = () => {
       </div>
       <div className="LaunchContainer">
         <button
-          onClick={LaunchGame}
+          onClick={launchGame}
           className={`Launch ${fullyPatched ? '' : 'disabled'}`}
         >
           Launch Game
