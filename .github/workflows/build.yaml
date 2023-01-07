@@ -45,7 +45,6 @@ jobs:
         with:
           name: launcher-windows
       - name: Create Release With Asset
-        id: Release-AIO
         uses: Hs1r1us/Release-AIO@v2.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -53,7 +52,6 @@ jobs:
           tag_name: ${{ github.ref }}
           asset_files: "./Launcher-windows-amd64.zip"
       - name: Duplicate Release With Asset to public_Repo
-        id: Release-AIO
         uses: Hs1r1us/Release-AIO@v2.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.PRIVATE_TOKEN }}
