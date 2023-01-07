@@ -1,6 +1,7 @@
 package main
 
 import (
+	"changeme/internal"
 	"context"
 	"fmt"
 
@@ -30,37 +31,32 @@ func (a *App) Greet(name string) string {
 
 // domReady is called after the front-end dom has been loaded
 func (a *App) domReady(ctx context.Context) {
-	runtime.LogInfo(b.ctx, "Checking For Updates")
+	runtime.LogInfo(a.ctx, "Checking For Updates")
 	a.UpdateCheckUI()
 }
 
 func (a *App) UpdateCheckUI() {
-	shouldUpdate, latestVersion := update.CheckForUpdate()
+	shouldUpdate, latestVersion := internal.CheckForUpdate()
 	if shouldUpdate {
 		updateMessage := fmt.Sprintf("New Version Available, would you like to update to v%s", latestVersion)
 		buttons := []string{"Yes", "No"}
 		dialogOpts := runtime.MessageDialogOptions{Title: "Update Available", Message: updateMessage, Type: runtime.QuestionDialog, Buttons: buttons, DefaultButton: "Yes", CancelButton: "No"}
-		action, err := runtime.MessageDialog(b.ctx, dialogOpts)
+		action, err := runtime.MessageDialog(a.ctx, dialogOpts)
 		if err != nil {
-			runtime.LogError(b.ctx, "Error in update dialog. ")
+			runtime.LogError(a.ctx, "Error in update dialog. ")
 		}
-		runtime.LogInfo(b.ctx, action)
+		runtime.LogInfo(a.ctx, action)
 		if action == "Yes" {
-			runtime.LogInfo(b.ctx, "Update clicked")
-			var updated bool
-			if goruntime.GOOS == "darwin" {
-				updated = update.DoSelfUpdateMac()
-			} else {
-				updated = update.DoSelfUpdate()
-			}
+			runtime.LogInfo(a.ctx, "Update clicked")
+			updated := internal.DoSelfUpdate()
 			if updated {
 				buttons = []string{"Ok"}
 				dialogOpts = runtime.MessageDialogOptions{Title: "Update Succeeded", Message: "Update Successfull. Please restart this app to take effect. ", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
-				runtime.MessageDialog(b.ctx, dialogOpts)
+				runtime.MessageDialog(a.ctx, dialogOpts)
 			} else {
 				buttons = []string{"Ok"}
-				dialogOpts = runtime.MessageDialogOptions{Title: "Update Error", Message: "Update failed, please manually update from GitHub Releases. ", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
-				runtime.MessageDialog(b.ctx, dialogOpts)
+				dialogOpts = runtime.MessageDialogOptions{Title: "Update Error", Message: "Update failed, please report this on Nostalgia Discord.", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
+				runtime.MessageDialog(a.ctx, dialogOpts)
 			}
 		}
 	}
