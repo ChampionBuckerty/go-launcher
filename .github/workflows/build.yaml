@@ -1,0 +1,53 @@
+on:
+  push:
+    tags:
+      - "v*"
+jobs:
+  package:
+    strategy:
+      matrix:
+        go-version: [1.19]
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set Version
+        run: echo "VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      - name: Get Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      - name: Build package windows
+        run: |
+          $GP = (go env GOPATH)
+          $env:path = "$env:path;$GP\bin"
+          echo "building on ${{ matrix.os }}"
+          choco install mingw
+          wails build -platform windows/amd64 -clean
+          Compress-Archive -Path .\build\bin\Launcher.exe -DestinationPath .\Launcher-windows-amd64.zip
+        if: matrix.os == 'windows-latest'
+      - name: upload artifact windows
+        uses: actions/upload-artifact@v2
+        with:
+          name: launcher-windows
+          path: Launcher-windows-amd64.zip
+        if: matrix.os == 'windows-latest'
+
+  release:
+    runs-on: ubuntu-latest
+    needs: package
+    steps:
+      - name: Download Windows Package
+        uses: actions/download-artifact@v2
+        with:
+          name: launcher-windows
+      - name: Create Release
+        id: create_release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: Launcher*.zip
