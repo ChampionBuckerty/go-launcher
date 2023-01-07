@@ -26,7 +26,7 @@ func (a *App) startup(ctx context.Context) {
 
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's GAME time V5!", name)
+	return fmt.Sprintf("Hello %s, It's GAME time V7!", name)
 }
 
 // domReady is called after the front-end dom has been loaded
@@ -36,9 +36,9 @@ func (a *App) domReady(ctx context.Context) {
 }
 
 func (a *App) UpdateCheckUI() {
-	shouldUpdate, latestVersion := internal.CheckForUpdate()
+	shouldUpdate, _ := internal.CheckForUpdate()
 	if shouldUpdate {
-		updateMessage := fmt.Sprintf("New Launcher Version Available, You must update to continue", latestVersion)
+		updateMessage := "New Launcher Version Available, You must update to continue"
 		buttons := []string{"Proceed"}
 		dialogOpts := runtime.MessageDialogOptions{Title: "Update Available", Message: updateMessage, Type: runtime.QuestionDialog, Buttons: buttons, DefaultButton: "Proceed"}
 		action, err := runtime.MessageDialog(a.ctx, dialogOpts)
