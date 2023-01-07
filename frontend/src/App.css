@@ -1,59 +1,84 @@
-#app {
-    height: 100vh;
-    text-align: center;
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  font-family: sans-serif;
+  -webkit-app-region: drag;
 }
 
-#logo {
-    display: block;
-    width: 50%;
-    height: 50%;
-    margin: auto;
-    padding: 10% 0 0;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-origin: content-box;
+.MainWindow {
+  /* background: url('../../resources/images/bg-closeup2.png') no-repeat center
+    center fixed; */
+  background: url("./assets/images/hollna-waterfall.png") no-repeat center;
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.result {
-    height: 20px;
-    line-height: 20px;
-    margin: 1.5rem auto;
+.Logo {
+  width: 40%;
+  margin-top: 30px;
+  margin-left: 40px;
+  z-index: 1;
+  position: relative;
+  user-select: none;
 }
 
-.input-box .btn {
-    width: 60px;
-    height: 30px;
-    line-height: 30px;
-    border-radius: 3px;
-    border: none;
-    margin: 0 0 0 20px;
-    padding: 0 8px;
-    cursor: pointer;
+.Background_Overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 0;
 }
 
-.input-box .btn:hover {
-    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-    color: #333333;
+.Settings {
+  background-color: #ff8000;
+  border: 0;
+  color: black;
+  font-weight: 600;
+  border-radius: 4px;
+  padding: 4px 14px;
+  z-index: 1;
+  letter-spacing: 1px;
+  align-self: flex-end;
+  margin-right: 60px;
+  margin-top: 12px;
+  cursor: pointer;
+  user-select: none;
 }
 
-.input-box .input {
-    border: none;
-    border-radius: 3px;
-    outline: none;
-    height: 30px;
-    line-height: 30px;
-    padding: 0 10px;
-    background-color: rgba(240, 240, 240, 1);
-    -webkit-font-smoothing: antialiased;
+.Settings:hover {
+  background-color: #f0a62b;
 }
 
-.input-box .input:hover {
-    border: none;
-    background-color: rgba(255, 255, 255, 1);
+button:focus {
+  outline: none;
+  text-decoration: none;
 }
 
-.input-box .input:focus {
-    border: none;
-    background-color: rgba(255, 255, 255, 1);
+button {
+  -webkit-app-region: no-drag;
+}
+
+.ExitButton {
+  fill: #f0a62b;
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 8px;
+  margin-top: 10px;
+  height: 12px;
+  -webkit-app-region: no-drag;
+}
+
+.ExitButton:hover {
+  fill: red;
 }

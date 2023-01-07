@@ -29,6 +29,10 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's GAME time V19!", name)
 }
 
+func (a *App) CloseApp() {
+	runtime.Quit(a.ctx)
+}
+
 // domReady is called after the front-end dom has been loaded
 func (a *App) domReady(ctx context.Context) {
 	runtime.LogInfo(a.ctx, "Checking For Updates")
@@ -60,7 +64,7 @@ func (a *App) UpdateCheckUI() {
 
 			nextAction, nextErr := runtime.MessageDialog(a.ctx, dialogOpts)
 			if nextAction == "Ok" || nextErr != nil {
-				runtime.Quit(a.ctx)
+				a.CloseApp()
 			}
 		}
 	}
