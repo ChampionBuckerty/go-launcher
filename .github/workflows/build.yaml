@@ -51,12 +51,8 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: Launcher*.zip
-      - name: Duplicate Release With Asset to public_Repo
-        id: Release-AIO
-        uses: Hs1r1us/Release-AIO@v2.0.0
+      - name: Publish
         env:
           GITHUB_TOKEN: ${{ secrets.PRIVATE_TOKEN }}
-        with:
-          tag_name: "inherit"
-          repo: "blurnos/nos-launcher"
-          asset_files: Launcher*.zip
+        shell: bash
+        run: $GITHUB_ACTION_PATH/scripts/clone-to-repo.sh
