@@ -26,7 +26,7 @@ func (a *App) startup(ctx context.Context) {
 
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's GAME time V7!", name)
+	return fmt.Sprintf("Hello %s, It's GAME time V19!", name)
 }
 
 // domReady is called after the front-end dom has been loaded
@@ -53,7 +53,7 @@ func (a *App) UpdateCheckUI() {
 			buttons = []string{"Ok"}
 
 			if updated {
-				dialogOpts = runtime.MessageDialogOptions{Title: "Update Succeeded", Message: "Update Successfull. Please restart this app to take effect.", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
+				dialogOpts = runtime.MessageDialogOptions{Title: "Update Succeeded", Message: "Update Successful. Please restart this app to take effect.", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
 			} else {
 				dialogOpts = runtime.MessageDialogOptions{Title: "Update Error", Message: "Update failed, please report this on Nostalgia Discord.", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
 			}
