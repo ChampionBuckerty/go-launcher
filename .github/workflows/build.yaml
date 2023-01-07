@@ -55,4 +55,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PRIVATE_TOKEN }}
         shell: bash
-        run: $GITHUB_ACTION_PATH/scripts/clone-to-repo.sh
+        run: ./scripts/clone-to-repo.sh
