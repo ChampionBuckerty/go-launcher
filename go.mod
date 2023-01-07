@@ -2,11 +2,14 @@ module changeme
 
 go 1.18
 
-require github.com/wailsapp/wails/v2 v2.3.1
+require (
+	github.com/blang/semver v3.5.1+incompatible
+	github.com/rhysd/go-github-selfupdate v1.2.3
+	github.com/wailsapp/wails/v2 v2.3.1
+)
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect
-	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/google/go-github/v30 v30.1.0 // indirect
@@ -24,7 +27,6 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/pkg/browser v0.0.0-20210706143420-7d21f8c997e2 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rhysd/go-github-selfupdate v1.2.3 // indirect
 	github.com/samber/lo v1.27.1 // indirect
 	github.com/tcnksm/go-gitconfig v0.1.2 // indirect
 	github.com/tkrajina/go-reflector v0.5.5 // indirect
