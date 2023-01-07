@@ -5,7 +5,7 @@ import { Greet } from "../wailsjs/go/main/App";
 
 function App() {
   const [resultText, setResultText] = useState(
-    "Please enter your name below 👇"
+    "Please enter your name below bruh 👇"
   );
   const [name, setName] = useState("");
   const updateName = (e: any) => setName(e.target.value);
