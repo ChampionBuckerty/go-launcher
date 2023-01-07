@@ -38,24 +38,26 @@ func (a *App) domReady(ctx context.Context) {
 func (a *App) UpdateCheckUI() {
 	shouldUpdate, _ := internal.CheckForUpdate()
 	if shouldUpdate {
-		updateMessage := "New Launcher Version Available, You must update to continue"
 		buttons := []string{"Proceed"}
-		dialogOpts := runtime.MessageDialogOptions{Title: "Update Available", Message: updateMessage, Type: runtime.QuestionDialog, Buttons: buttons, DefaultButton: "Proceed"}
+		dialogOpts := runtime.MessageDialogOptions{Title: "Update Available", Message: "New Launcher Version Available, You must update to continue", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Proceed"}
+
 		action, err := runtime.MessageDialog(a.ctx, dialogOpts)
 		if err != nil {
 			runtime.LogError(a.ctx, "Error in update dialog. ")
 		}
+
 		runtime.LogInfo(a.ctx, action)
 		if action == "Yes" {
 			runtime.LogInfo(a.ctx, "Update clicked")
 			updated := internal.DoSelfUpdate()
+			buttons = []string{"Ok"}
+
 			if updated {
-				buttons = []string{"Ok"}
 				dialogOpts = runtime.MessageDialogOptions{Title: "Update Succeeded", Message: "Update Successfull. Please restart this app to take effect.", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
 			} else {
-				buttons = []string{"Ok"}
 				dialogOpts = runtime.MessageDialogOptions{Title: "Update Error", Message: "Update failed, please report this on Nostalgia Discord.", Type: runtime.InfoDialog, Buttons: buttons, DefaultButton: "Ok"}
 			}
+
 			nextAction, nextErr := runtime.MessageDialog(a.ctx, dialogOpts)
 			if nextAction == "Ok" || nextErr != nil {
 				runtime.Quit(a.ctx)
