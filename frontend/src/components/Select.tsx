@@ -48,17 +48,22 @@ const defaultSelectStyles = {
     },
   ) => {
     let backgroundColor = 'black'
+    let color = 'white'
 
-    if (isSelected) backgroundColor = '#ffc500'
-    if (isFocused) backgroundColor = '#ffc500'
+    if (isSelected || isFocused) {
+      backgroundColor = '#ff8000'
+      color = 'black'
+    }
 
     return {
       ...styles,
       backgroundColor,
+      color,
 
       ':active': {
         ...styles[':active'],
         backgroundColor,
+        color,
       },
     }
   },
