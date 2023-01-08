@@ -31,5 +31,7 @@ func (a *App) LaunchGame() {
 		runtime.LogFatal(a.ctx, err.Error())
 	}
 
+	cmd.Process.Release()
+
 	a.CloseApp()
 }
