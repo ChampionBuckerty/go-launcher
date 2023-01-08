@@ -1,0 +1,9 @@
+.Settings__Select-Placeholder {
+  color: gray;
+  font-size: 14px;
+  line-height: 15px;
+}
+
+.Settings__Select {
+  width: 200px;
+}

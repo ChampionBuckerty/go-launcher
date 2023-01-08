@@ -13,11 +13,15 @@ export function GetBasePath():Promise<string>;
 
 export function Greet(arg1:string):Promise<string>;
 
+export function IniToObject():Promise<{[key: string]: {[key: string]: string}}>;
+
 export function InstallAllPatches(arg1:Array<string>,arg2:Array<number>):Promise<void>;
 
 export function LaunchGame():Promise<void>;
 
 export function NostalgiaIniPath():Promise<string>;
+
+export function ObjectToIniFile(arg1:{[key: string]: {[key: string]: string}}):Promise<void>;
 
 export function OptionIniPath():Promise<string>;
 

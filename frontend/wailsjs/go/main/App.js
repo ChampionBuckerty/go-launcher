@@ -26,6 +26,10 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
+export function IniToObject() {
+  return window['go']['main']['App']['IniToObject']();
+}
+
 export function InstallAllPatches(arg1, arg2) {
   return window['go']['main']['App']['InstallAllPatches'](arg1, arg2);
 }
@@ -36,6 +40,10 @@ export function LaunchGame() {
 
 export function NostalgiaIniPath() {
   return window['go']['main']['App']['NostalgiaIniPath']();
+}
+
+export function ObjectToIniFile(arg1) {
+  return window['go']['main']['App']['ObjectToIniFile'](arg1);
 }
 
 export function OptionIniPath() {
