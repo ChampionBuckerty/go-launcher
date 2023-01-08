@@ -45,6 +45,10 @@ Loop:
 			runtime.EventsEmit(a.ctx, "downloadProgress", actualProgress)
 
 		case <-resp.Done:
+			actualProgress := int(math.Round(basePercent + eachFileMaxPercent))
+
+			runtime.EventsEmit(a.ctx, "downloadProgress", actualProgress)
+
 			// download is complete
 			break Loop
 		}
@@ -62,7 +66,9 @@ Loop:
 }
 
 func (a *App) Unzip(fileLocation string) {
-	dst := a.GetBasePath()
+	// LOCAL TESTING ONLY
+	dst := fmt.Sprintf("%s/%s", a.GetBasePath(), "tmp")
+	// dst := a.GetBasePath()
 	// Load file
 	archive, err := zip.OpenReader(fileLocation)
 	if err != nil {

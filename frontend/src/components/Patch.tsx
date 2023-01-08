@@ -32,14 +32,25 @@ const Patch: React.FunctionComponent = () => {
   }, [fullyPatched, setLaunching, launching])
 
   useEffect(() => {
-    EventsOn('downloadProgress', async (percentage: number) => {
-      setPercentage(percentage)
+    EventsOn('downloadProgress', async (progress: number) => {
+      setPercentage(progress)
     })
 
     EventsOn('currentActionUpdates', async (actionMessage: string) => {
+      if (percentage === 100) {
+        return
+      }
+
       setCurrentAction(actionMessage)
     })
   }, [])
+
+  useEffect(() => {
+    if (percentage === 100) {
+      setFullyPatched(true)
+      setCurrentAction('All patches installed!')
+    }
+  }, [percentage])
 
   // Fetch all available patches based on users current version
   useEffect(() => {
