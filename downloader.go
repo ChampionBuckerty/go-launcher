@@ -4,6 +4,8 @@ import (
 	"archive/zip"
 	"fmt"
 	"io"
+	"log"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -19,7 +21,7 @@ import (
 
 // Update game version with patch number
 
-func (a *App) Download(fileUrl string) string {
+func (a *App) Download(fileUrl string, basePercent float64, eachFileMaxPercent float64) string {
 	client := grab.NewClient()
 	req, _ := grab.NewRequest(".", fileUrl)
 
@@ -37,7 +39,10 @@ Loop:
 		select {
 		case <-t.C:
 			progressPercent := 100 * resp.Progress()
-			runtime.EventsEmit(a.ctx, "downloadProgress", progressPercent)
+
+			actualProgress := int(math.Round(basePercent + (progressPercent * eachFileMaxPercent)))
+
+			runtime.EventsEmit(a.ctx, "downloadProgress", actualProgress)
 
 		case <-resp.Done:
 			// download is complete
@@ -103,19 +108,37 @@ func (a *App) Unzip(fileLocation string) {
 	}
 }
 
-func (a *App) DownloadAndInstallPatch(fileUrl string, patchNumber int) {
+func (a *App) RemovePatchZip(downloadLocation string) {
+	e := os.Remove(downloadLocation)
+	if e != nil {
+		log.Fatal(e)
+	}
+}
+
+func (a *App) DownloadAndInstallPatch(fileUrl string, patchNumber int, basePercent float64, eachFileMaxPercent float64) {
 	runtime.EventsEmit(a.ctx, "currentActionUpdates", fmt.Sprintf("Downloading Patch %v", patchNumber))
 
-	downloadLocation := a.Download(fileUrl)
+	downloadLocation := a.Download(fileUrl, basePercent, eachFileMaxPercent)
 
 	runtime.EventsEmit(a.ctx, "currentActionUpdates", fmt.Sprintf("Unzipping Patch %v", patchNumber))
 
 	// Wait 500ms
+	time.Sleep(100 * time.Millisecond)
 
 	a.Unzip(downloadLocation)
 
 	// Update game version
 
 	// Delete zip file
+	a.RemovePatchZip(downloadLocation)
+}
 
+func (a *App) InstallAllPatches(patches []string, patchNumbers []int) {
+	eachFileMaxPercent := 100.0 / float64(len(patches))
+
+	for index, patch := range patches {
+		basePercent := float64(index) * eachFileMaxPercent
+
+		a.DownloadAndInstallPatch(patch, patchNumbers[index], basePercent, eachFileMaxPercent)
+	}
 }

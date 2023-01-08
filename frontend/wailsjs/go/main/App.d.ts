@@ -3,9 +3,9 @@
 
 export function CloseApp():Promise<void>;
 
-export function Download(arg1:string):Promise<string>;
+export function Download(arg1:string,arg2:number,arg3:number):Promise<string>;
 
-export function DownloadAndInstallPatch(arg1:string,arg2:number):Promise<void>;
+export function DownloadAndInstallPatch(arg1:string,arg2:number,arg3:number,arg4:number):Promise<void>;
 
 export function FetchGameVersion():Promise<number>;
 
@@ -13,11 +13,15 @@ export function GetBasePath():Promise<string>;
 
 export function Greet(arg1:string):Promise<string>;
 
+export function InstallAllPatches(arg1:Array<string>,arg2:Array<number>):Promise<void>;
+
 export function LaunchGame():Promise<void>;
 
 export function NostalgiaIniPath():Promise<string>;
 
 export function OptionIniPath():Promise<string>;
+
+export function RemovePatchZip(arg1:string):Promise<void>;
 
 export function Unzip(arg1:string):Promise<void>;
 

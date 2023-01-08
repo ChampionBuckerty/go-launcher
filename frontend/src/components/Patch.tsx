@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react'
 import {
   FetchGameVersion,
   LaunchGame,
-  DownloadAndInstallPatch,
+  InstallAllPatches,
 } from '../../wailsjs/go/main/App'
 import './Patch.css'
 import ProgressBar from './ProgressBar'
@@ -12,12 +12,9 @@ import { EventsOn } from '../../wailsjs/runtime'
 
 const Patch: React.FunctionComponent = () => {
   const [percentage, setPercentage] = useState<number>(0)
-  const [availablePatches, setAvailablePatches] = useState<string[]>([])
   const [fullyPatched, setFullyPatched] = useState<boolean>(false)
   const [launching, setLaunching] = useState<boolean>(false)
   const [currentAction, setCurrentAction] = useState<string>('')
-  const [lastPatchLength, setLastPatchLength] = useState<number>(0)
-  const [totalPatchLength, setTotalPatchLength] = useState<number>(0)
   const [bypassClickCounter, setBypassClickCounter] = useState<number>(0)
   const [currentVersion, setCurrentVersion] = useState<number>(0)
 
@@ -35,65 +32,14 @@ const Patch: React.FunctionComponent = () => {
   }, [fullyPatched, setLaunching, launching])
 
   useEffect(() => {
-    EventsOn('downloadProgress', async (singleFilePercent: number) => {
-      const eachFileMaxPercent = 100.0 / totalPatchLength
-
-      let currentFileNumber = totalPatchLength - lastPatchLength
-
-      const basePercent = currentFileNumber * eachFileMaxPercent
-
-      const progress = Math.round(
-        basePercent + singleFilePercent * eachFileMaxPercent,
-      )
-
-      setPercentage(progress)
+    EventsOn('downloadProgress', async (percentage: number) => {
+      setPercentage(percentage)
     })
 
     EventsOn('currentActionUpdates', async (actionMessage: string) => {
       setCurrentAction(actionMessage)
     })
   }, [])
-
-  const downloadAndUnzipPatch = async () => {
-    const localPatches = availablePatches
-    let patchUrl = localPatches.shift()
-    setAvailablePatches(localPatches)
-
-    if (!patchUrl) {
-      return
-    }
-
-    const splitPatchUrl = patchUrl.split('/')
-    let fileName = splitPatchUrl[splitPatchUrl.length - 1]
-
-    if (fileName === 'file') {
-      // Lets remove that crap and fix the rest
-      splitPatchUrl.pop()
-      fileName = splitPatchUrl[splitPatchUrl.length - 1]
-      patchUrl = splitPatchUrl.join('/')
-    }
-
-    const patchVersion = fileName.split('-')[1].split('.')[0]
-    const patchNumber = patchVersion.substring(1)
-
-    DownloadAndInstallPatch(patchUrl, parseInt(patchNumber))
-  }
-
-  // If we've got any available patches, download and install them
-  useEffect(() => {
-    if (
-      availablePatches === null ||
-      availablePatches?.length === 0 ||
-      !totalPatchLength ||
-      lastPatchLength === 0
-    ) {
-      return
-    }
-
-    if (availablePatches?.length == lastPatchLength) {
-      downloadAndUnzipPatch()
-    }
-  }, [availablePatches, lastPatchLength, totalPatchLength])
 
   // Fetch all available patches based on users current version
   useEffect(() => {
@@ -102,14 +48,20 @@ const Patch: React.FunctionComponent = () => {
     axios({
       url: `https://api.nos.tw/updates?version=${currentVersion}`,
     }).then((response) => {
-      setAvailablePatches(response.data.patches)
-      setLastPatchLength(response.data.patches.length)
-      setTotalPatchLength(response.data.patches.length)
       if (response.data.patches.length < 1) {
         setPercentage(100)
         setFullyPatched(true)
         setCurrentAction('All patches already installed!')
+        return
       }
+
+      const patchNumbers = response.data.patches.map((p: string) => {
+        const split = p.split('-')
+        const patchVersion = split[split.length - 1].split('.')[0]
+        return parseInt(patchVersion.substring(1))
+      })
+
+      InstallAllPatches(response.data.patches, patchNumbers)
     })
   }, [currentVersion])
 

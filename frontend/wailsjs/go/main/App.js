@@ -6,12 +6,12 @@ export function CloseApp() {
   return window['go']['main']['App']['CloseApp']();
 }
 
-export function Download(arg1) {
-  return window['go']['main']['App']['Download'](arg1);
+export function Download(arg1, arg2, arg3) {
+  return window['go']['main']['App']['Download'](arg1, arg2, arg3);
 }
 
-export function DownloadAndInstallPatch(arg1, arg2) {
-  return window['go']['main']['App']['DownloadAndInstallPatch'](arg1, arg2);
+export function DownloadAndInstallPatch(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['DownloadAndInstallPatch'](arg1, arg2, arg3, arg4);
 }
 
 export function FetchGameVersion() {
@@ -26,6 +26,10 @@ export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
+export function InstallAllPatches(arg1, arg2) {
+  return window['go']['main']['App']['InstallAllPatches'](arg1, arg2);
+}
+
 export function LaunchGame() {
   return window['go']['main']['App']['LaunchGame']();
 }
@@ -36,6 +40,10 @@ export function NostalgiaIniPath() {
 
 export function OptionIniPath() {
   return window['go']['main']['App']['OptionIniPath']();
+}
+
+export function RemovePatchZip(arg1) {
+  return window['go']['main']['App']['RemovePatchZip'](arg1);
 }
 
 export function Unzip(arg1) {
