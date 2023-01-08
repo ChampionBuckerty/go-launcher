@@ -62,28 +62,28 @@ const Patch: React.FunctionComponent<Props> = ({ setActivePage }) => {
   }, [percentage])
 
   // Fetch all available patches based on users current version
-  // useEffect(() => {
-  //   if (currentVersion === 0) return
+  useEffect(() => {
+    if (currentVersion === 0) return
 
-  //   axios({
-  //     url: `https://api.nos.tw/updates?version=${currentVersion}`,
-  //   }).then((response) => {
-  //     if (response.data.patches.length < 1) {
-  //       setPercentage(100)
-  //       setFullyPatched(true)
-  //       setCurrentAction('All patches already installed!')
-  //       return
-  //     }
+    axios({
+      url: `https://api.nos.tw/updates?version=${currentVersion}`,
+    }).then((response) => {
+      if (response.data.patches.length < 1) {
+        setPercentage(100)
+        setFullyPatched(true)
+        setCurrentAction('All patches already installed!')
+        return
+      }
 
-  //     const patchNumbers = response.data.patches.map((p: string) => {
-  //       const split = p.split('-')
-  //       const patchVersion = split[split.length - 1].split('.')[0]
-  //       return parseInt(patchVersion.substring(1))
-  //     })
+      const patchNumbers = response.data.patches.map((p: string) => {
+        const split = p.split('-')
+        const patchVersion = split[split.length - 1].split('.')[0]
+        return parseInt(patchVersion.substring(1))
+      })
 
-  //     InstallAllPatches(response.data.patches, patchNumbers)
-  //   })
-  // }, [currentVersion])
+      InstallAllPatches(response.data.patches, patchNumbers)
+    })
+  }, [currentVersion])
 
   return (
     <div className="Patch">
