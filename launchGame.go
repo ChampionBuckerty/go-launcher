@@ -22,7 +22,7 @@ func (a *App) LaunchGame() {
 
 	fullPath := fmt.Sprintf("%s/%s", path, exeName)
 
-	cmd := exec.Command("cmd.exe", "/C", "start", "/b", fmt.Sprintf("%s %s", fullPath, "!RepentLauncher~#"))
+	cmd := exec.Command("cmd.exe", "/C", "start", fmt.Sprintf("%s %s", fullPath, "!RepentLauncher~#"))
 
 	cmdErr := cmd.Run()
 
