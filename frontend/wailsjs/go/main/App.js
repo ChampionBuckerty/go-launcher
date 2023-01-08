@@ -6,6 +6,22 @@ export function CloseApp() {
   return window['go']['main']['App']['CloseApp']();
 }
 
+export function Download(arg1) {
+  return window['go']['main']['App']['Download'](arg1);
+}
+
+export function DownloadAndInstallPatch(arg1, arg2) {
+  return window['go']['main']['App']['DownloadAndInstallPatch'](arg1, arg2);
+}
+
+export function FetchGameVersion() {
+  return window['go']['main']['App']['FetchGameVersion']();
+}
+
+export function GetBasePath() {
+  return window['go']['main']['App']['GetBasePath']();
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
@@ -14,6 +30,22 @@ export function LaunchGame() {
   return window['go']['main']['App']['LaunchGame']();
 }
 
+export function NostalgiaIniPath() {
+  return window['go']['main']['App']['NostalgiaIniPath']();
+}
+
+export function OptionIniPath() {
+  return window['go']['main']['App']['OptionIniPath']();
+}
+
+export function Unzip(arg1) {
+  return window['go']['main']['App']['Unzip'](arg1);
+}
+
 export function UpdateCheckUI() {
   return window['go']['main']['App']['UpdateCheckUI']();
+}
+
+export function UpdateGameVersion() {
+  return window['go']['main']['App']['UpdateGameVersion']();
 }

@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
+	github.com/cavaliergopher/grab/v3 v3.0.1
 	github.com/rhysd/go-github-selfupdate v1.2.3
 	github.com/wailsapp/wails/v2 v2.3.1
 )

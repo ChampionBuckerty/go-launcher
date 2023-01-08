@@ -1,29 +1,29 @@
-// import axios from "axios";
+import axios from 'axios'
 import * as React from 'react'
-import { useState, useCallback } from 'react'
-import { LaunchGame } from '../../wailsjs/go/main/App'
+import { useState, useCallback, useEffect } from 'react'
+import {
+  FetchGameVersion,
+  LaunchGame,
+  DownloadAndInstallPatch,
+} from '../../wailsjs/go/main/App'
 import './Patch.css'
 import ProgressBar from './ProgressBar'
-// import AdmZip from "adm-zip";
-// import fs from "fs";
-// import { ipcRenderer, remote } from 'electron'
-// import request from "request";
-// import IniManager from './IniManager'
-// import LaunchGame from './LaunchGame'
-// import * as Sentry from "@sentry/electron";
+import { EventsOn } from '../../wailsjs/runtime'
 
 const Patch: React.FunctionComponent = () => {
   const [percentage, setPercentage] = useState<number>(0)
-  // const [availablePatches, setAvailablePatches] = useState<string[] | null>(
-  //   null,
-  // )
+  const [availablePatches, setAvailablePatches] = useState<string[]>([])
   const [fullyPatched, setFullyPatched] = useState<boolean>(false)
   const [launching, setLaunching] = useState<boolean>(false)
   const [currentAction, setCurrentAction] = useState<string>('')
-  // const [lastPatchLength, setLastPatchLength] = useState<number>()
-  // const [totalPatchLength, setTotalPatchLength] = useState<number>()
+  const [lastPatchLength, setLastPatchLength] = useState<number>(0)
+  const [totalPatchLength, setTotalPatchLength] = useState<number>(0)
   const [bypassClickCounter, setBypassClickCounter] = useState<number>(0)
-  // const currentVersion = IniManager.fetchGameVersion()
+  const [currentVersion, setCurrentVersion] = useState<number>(0)
+
+  FetchGameVersion().then((version) => {
+    setCurrentVersion(version)
+  })
 
   const launchGame = useCallback(() => {
     if (launching) return
@@ -34,158 +34,84 @@ const Patch: React.FunctionComponent = () => {
     }
   }, [fullyPatched, setLaunching, launching])
 
-  // const downloadAndUnzipPatch = async () => {
-  //   const eachFileMaxPercent = 100.0 / totalPatchLength;
-  //   const rootPath =
-  //     process.env.NODE_ENV === "production"
-  //       ? remote.app.getAppPath() + "/../../.."
-  //       : remote.app.getAppPath();
-  //   let currentFileNumber = totalPatchLength - lastPatchLength;
+  useEffect(() => {
+    EventsOn('downloadProgress', async (singleFilePercent: number) => {
+      const eachFileMaxPercent = 100.0 / totalPatchLength
 
-  //   const localPatches = availablePatches;
-  //   let patchUrl = localPatches.shift();
-  //   setAvailablePatches(localPatches);
+      let currentFileNumber = totalPatchLength - lastPatchLength
 
-  //   const splitPatchUrl = patchUrl.split("/");
-  //   let fileName = splitPatchUrl[splitPatchUrl.length - 1];
+      const basePercent = currentFileNumber * eachFileMaxPercent
 
-  //   if (fileName === "file") {
-  //     // Lets remove that crap and fix the rest
-  //     splitPatchUrl.pop();
-  //     fileName = splitPatchUrl[splitPatchUrl.length - 1];
-  //     patchUrl = splitPatchUrl.join("/");
-  //   }
+      const progress = Math.round(
+        basePercent + singleFilePercent * eachFileMaxPercent,
+      )
 
-  //   const fullFilePath = `${rootPath}/${fileName}`;
-  //   const patchVersion = fileName.split("-")[1].split(".")[0];
-  //   const patchNumber = patchVersion.substring(1);
-  //   let progress: number;
+      setPercentage(progress)
+    })
 
-  //   setCurrentAction(`Downloading Patch ${patchNumber}`);
+    EventsOn('currentActionUpdates', async (actionMessage: string) => {
+      setCurrentAction(actionMessage)
+    })
+  }, [])
 
-  //   // Save variable to know progress
-  //   let received_bytes = 0;
-  //   let total_bytes = 0;
+  const downloadAndUnzipPatch = async () => {
+    const localPatches = availablePatches
+    let patchUrl = localPatches.shift()
+    setAvailablePatches(localPatches)
 
-  //   const saveZIPFile = async () => {
-  //     return new Promise((resolve) => {
-  //       let req = request({
-  //         method: "GET",
-  //         uri: patchUrl,
-  //       });
+    if (!patchUrl) {
+      return
+    }
 
-  //       let out = fs.createWriteStream(fullFilePath);
-  //       req.pipe(out);
+    const splitPatchUrl = patchUrl.split('/')
+    let fileName = splitPatchUrl[splitPatchUrl.length - 1]
 
-  //       req.on("response", (data) => {
-  //         // Change the total bytes value to get progress later.
-  //         total_bytes = parseInt(data.headers["content-length"]);
-  //       });
+    if (fileName === 'file') {
+      // Lets remove that crap and fix the rest
+      splitPatchUrl.pop()
+      fileName = splitPatchUrl[splitPatchUrl.length - 1]
+      patchUrl = splitPatchUrl.join('/')
+    }
 
-  //       req.on("data", (chunk) => {
-  //         // Update the received bytes
-  //         received_bytes += chunk.length;
+    const patchVersion = fileName.split('-')[1].split('.')[0]
+    const patchNumber = patchVersion.substring(1)
 
-  //         const singleFilePercent = received_bytes / total_bytes;
+    DownloadAndInstallPatch(patchUrl, parseInt(patchNumber))
+  }
 
-  //         const basePercent = currentFileNumber * eachFileMaxPercent;
+  // If we've got any available patches, download and install them
+  useEffect(() => {
+    if (
+      availablePatches === null ||
+      availablePatches?.length === 0 ||
+      !totalPatchLength ||
+      lastPatchLength === 0
+    ) {
+      return
+    }
 
-  //         progress = Math.round(
-  //           basePercent + singleFilePercent * eachFileMaxPercent
-  //         );
+    if (availablePatches?.length == lastPatchLength) {
+      downloadAndUnzipPatch()
+    }
+  }, [availablePatches, lastPatchLength, totalPatchLength])
 
-  //         setPercentage(progress);
-  //       });
+  // Fetch all available patches based on users current version
+  useEffect(() => {
+    if (currentVersion === 0) return
 
-  //       req.on("end", () => {
-  //         // Wait a second after completion of download to start trying to unzip
-  //         setTimeout(() => {
-  //           resolve(true);
-  //         }, 1000);
-  //       });
-  //     });
-  //   };
-
-  //   await saveZIPFile();
-
-  //   setCurrentAction(`Unzipping Patch ${patchNumber}`);
-
-  //   setTimeout(() => {
-  //     try {
-  //       const zip = new AdmZip(fullFilePath);
-  //       let extractPath = rootPath;
-
-  //       if (process.env.NODE_ENV !== "production") {
-  //         extractPath = extractPath + "/tmp";
-  //       }
-
-  //       const entries = zip.getEntries();
-  //       const entryNames = entries.map((entry) => entry.entryName);
-
-  //       zip.extractAllTo(extractPath, true);
-  //       IniManager.updateGameVersion(parseInt(patchNumber));
-
-  //       if (fs.existsSync(fullFilePath)) {
-  //         fs.unlink(fullFilePath, (err) => {
-  //           if (err) {
-  //             alert("An error occurred deleting the file" + err.message);
-  //             Sentry.captureException(err);
-  //             return;
-  //           }
-  //           console.log("File succesfully deleted");
-  //         });
-  //       }
-
-  //       // Here, we've updated the ini to this patch number already and fully patched
-  //       // Restarting the launcher will be safe, so we should not "finish" and instead exit and run updater
-  //       if (entryNames.includes("Launcher.zip")) {
-  //         ipcRenderer.invoke("mainWindow:launchUpdater");
-  //       }
-
-  //       currentFileNumber++;
-  //       setLastPatchLength(availablePatches.length);
-  //       if (progress === 100) {
-  //         setFullyPatched(true);
-  //         setCurrentAction("All patches installed!");
-  //       }
-  //     } catch (e) {
-  //       Sentry.captureException(e);
-  //       alert(e);
-  //     }
-  //   }, 20);
-  // };
-
-  // // If we've got any available patches, download and install them
-  // useEffect(() => {
-  //   if (
-  //     availablePatches === [] ||
-  //     availablePatches === null ||
-  //     !totalPatchLength ||
-  //     lastPatchLength === 0
-  //   ) {
-  //     return;
-  //   }
-
-  //   if (availablePatches?.length == lastPatchLength) {
-  //     downloadAndUnzipPatch();
-  //   }
-  // }, [availablePatches, lastPatchLength, totalPatchLength]);
-
-  // // Fetch all available patches based on users current version
-  // useEffect(() => {
-  //   axios({
-  //     url: `https://api.nos.tw/updates?version=${currentVersion}`,
-  //   }).then((response) => {
-  //     setAvailablePatches(response.data.patches);
-  //     setLastPatchLength(response.data.patches.length);
-  //     setTotalPatchLength(response.data.patches.length);
-  //     if (response.data.patches.length < 1) {
-  //       setPercentage(100);
-  //       setFullyPatched(true);
-  //       setCurrentAction("All patches already installed!");
-  //     }
-  //   });
-  // }, []);
+    axios({
+      url: `https://api.nos.tw/updates?version=${currentVersion}`,
+    }).then((response) => {
+      setAvailablePatches(response.data.patches)
+      setLastPatchLength(response.data.patches.length)
+      setTotalPatchLength(response.data.patches.length)
+      if (response.data.patches.length < 1) {
+        setPercentage(100)
+        setFullyPatched(true)
+        setCurrentAction('All patches already installed!')
+      }
+    })
+  }, [currentVersion])
 
   return (
     <div className="Patch">

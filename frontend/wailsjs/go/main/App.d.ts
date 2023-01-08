@@ -3,8 +3,24 @@
 
 export function CloseApp():Promise<void>;
 
+export function Download(arg1:string):Promise<string>;
+
+export function DownloadAndInstallPatch(arg1:string,arg2:number):Promise<void>;
+
+export function FetchGameVersion():Promise<number>;
+
+export function GetBasePath():Promise<string>;
+
 export function Greet(arg1:string):Promise<string>;
 
 export function LaunchGame():Promise<void>;
 
+export function NostalgiaIniPath():Promise<string>;
+
+export function OptionIniPath():Promise<string>;
+
+export function Unzip(arg1:string):Promise<void>;
+
 export function UpdateCheckUI():Promise<void>;
+
+export function UpdateGameVersion():Promise<void>;
