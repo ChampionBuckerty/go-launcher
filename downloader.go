@@ -40,9 +40,7 @@ Loop:
 	for {
 		select {
 		case <-t.C:
-			progressPercent := 100 * resp.Progress()
-
-			actualProgress := int(math.Round(basePercent + (progressPercent * eachFileMaxPercent)))
+			actualProgress := int(math.Round(basePercent + (resp.Progress() * eachFileMaxPercent)))
 
 			runtime.EventsEmit(a.ctx, "downloadProgress", actualProgress)
 
