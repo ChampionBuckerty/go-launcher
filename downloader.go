@@ -11,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	goruntime "runtime"
+
 	"github.com/cavaliergopher/grab/v3"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -66,9 +68,14 @@ Loop:
 }
 
 func (a *App) Unzip(fileLocation string) {
-	// LOCAL TESTING ONLY
-	// dst := fmt.Sprintf("%s/%s", a.GetBasePath(), "tmp")
 	dst := a.GetBasePath()
+
+	// LOCAL TESTING ONLY
+	windowsOs := goruntime.GOOS == "windows"
+	if !windowsOs {
+		dst = fmt.Sprintf("%s/%s", a.GetBasePath(), "tmp")
+	}
+
 	// Load file
 	archive, err := zip.OpenReader(fileLocation)
 	if err != nil {
