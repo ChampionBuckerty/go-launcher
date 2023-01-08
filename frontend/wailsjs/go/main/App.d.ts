@@ -27,4 +27,4 @@ export function Unzip(arg1:string):Promise<void>;
 
 export function UpdateCheckUI():Promise<void>;
 
-export function UpdateGameVersion():Promise<void>;
+export function UpdateGameVersion(arg1:number):Promise<void>;

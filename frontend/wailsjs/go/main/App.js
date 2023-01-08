@@ -54,6 +54,6 @@ export function UpdateCheckUI() {
   return window['go']['main']['App']['UpdateCheckUI']();
 }
 
-export function UpdateGameVersion() {
-  return window['go']['main']['App']['UpdateGameVersion']();
+export function UpdateGameVersion(arg1) {
+  return window['go']['main']['App']['UpdateGameVersion'](arg1);
 }

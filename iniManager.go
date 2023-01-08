@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"regexp"
 	"strconv"
@@ -56,16 +57,26 @@ func (a *App) FetchGameVersion() int {
 	return intVar
 }
 
-func (a *App) UpdateGameVersion() {
+func (a *App) UpdateGameVersion(version int) {
+	path, _ := a.NostalgiaIniPath()
+
 	// multi line string
+	fileText := `[ARES]
+VERSION=%v
 
-	// const fileText = `[ARES]
-	// VERSION=${newVersion}
+[NOSTALGIA]
+VERSION=%v
 
-	// [NOSTALGIA]
-	// VERSION=${newVersion}
+`
 
-	// `
+	formattedText := fmt.Sprintf(fileText, version, version)
 
 	// Overwrite ini file with this text
+	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	f.WriteString(formattedText)
 }

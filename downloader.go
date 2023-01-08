@@ -134,6 +134,7 @@ func (a *App) DownloadAndInstallPatch(fileUrl string, patchNumber int, basePerce
 	a.Unzip(downloadLocation)
 
 	// Update game version
+	a.UpdateGameVersion(patchNumber)
 
 	// Delete zip file
 	a.RemovePatchZip(downloadLocation)

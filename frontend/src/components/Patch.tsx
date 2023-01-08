@@ -18,9 +18,13 @@ const Patch: React.FunctionComponent = () => {
   const [bypassClickCounter, setBypassClickCounter] = useState<number>(0)
   const [currentVersion, setCurrentVersion] = useState<number>(0)
 
-  FetchGameVersion().then((version) => {
-    setCurrentVersion(version)
-  })
+  useEffect(() => {
+    if (currentVersion !== 0) return
+
+    FetchGameVersion().then((version) => {
+      setCurrentVersion(version)
+    })
+  }, [currentVersion])
 
   const launchGame = useCallback(() => {
     if (launching) return
