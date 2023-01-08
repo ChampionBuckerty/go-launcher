@@ -12,6 +12,7 @@ import (
 func (a *App) LaunchGame() {
 	// Fetch app path (launcher will be in main path this time)
 	exeName := "Nostalgia.exe"
+	cmdArgs := "!RepentLauncher~#"
 
 	path, err := os.Getwd()
 	if err != nil {
@@ -22,9 +23,11 @@ func (a *App) LaunchGame() {
 
 	fullPath := fmt.Sprintf("%s\\%s", path, exeName)
 
-	cmd := exec.Command("cmd.exe", "/C", "start", fmt.Sprintf("%s %s", fullPath, "!RepentLauncher~#"))
+	// cmd := exec.Command("cmd", "/C", "start", fmt.Sprintf("%s %s", fullPath, cmdArgs))
 
-	cmdErr := cmd.Run()
+	cmd := exec.Command(fullPath, cmdArgs)
+
+	cmdErr := cmd.Start()
 
 	if cmdErr != nil {
 		runtime.LogError(a.ctx, "Error occured launching game \n")
