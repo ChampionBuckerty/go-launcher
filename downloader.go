@@ -67,8 +67,8 @@ Loop:
 
 func (a *App) Unzip(fileLocation string) {
 	// LOCAL TESTING ONLY
-	dst := fmt.Sprintf("%s/%s", a.GetBasePath(), "tmp")
-	// dst := a.GetBasePath()
+	// dst := fmt.Sprintf("%s/%s", a.GetBasePath(), "tmp")
+	dst := a.GetBasePath()
 	// Load file
 	archive, err := zip.OpenReader(fileLocation)
 	if err != nil {
