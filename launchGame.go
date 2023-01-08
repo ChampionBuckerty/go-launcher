@@ -20,7 +20,7 @@ func (a *App) LaunchGame() {
 	}
 	runtime.LogInfo(a.ctx, path)
 
-	fullPath := fmt.Sprintf("%s/%s", path, exeName)
+	fullPath := fmt.Sprintf("%s\\%s", path, exeName)
 
 	cmd := exec.Command("cmd.exe", "/C", "start", fmt.Sprintf("%s %s", fullPath, "!RepentLauncher~#"))
 
