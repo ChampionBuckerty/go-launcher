@@ -5,6 +5,7 @@ import {
   FetchGameVersion,
   LaunchGame,
   InstallAllPatches,
+  CanWePatch,
 } from '../../wailsjs/go/main/App'
 import './Patch.css'
 import ProgressBar from './ProgressBar'
@@ -41,29 +42,54 @@ const Patch: React.FunctionComponent<Props> = ({ setActivePage }) => {
   }, [fullyPatched, setLaunching, launching])
 
   useEffect(() => {
-    EventsOn('downloadProgress', async (progress: number) => {
-      setPercentage(progress)
-    })
+    // @ts-ignore
+    const actionListener = window.runtime.EventsOn(
+      'currentActionUpdates',
+      async (actionMessage: string) => {
+        if (percentage === 100) {
+          return
+        }
 
-    EventsOn('currentActionUpdates', async (actionMessage: string) => {
-      if (percentage === 100) {
-        return
-      }
+        setCurrentAction(actionMessage)
+      },
+    )
 
-      setCurrentAction(actionMessage)
-    })
+    return () => {
+      actionListener()
+    }
+  }, [percentage])
+
+  useEffect(() => {
+    // @ts-ignore
+    const progressListener = window.runtime.EventsOn(
+      'downloadProgress',
+      async (progress: number) => {
+        setPercentage(progress)
+      },
+    )
+
+    return () => {
+      progressListener()
+    }
   }, [])
 
   useEffect(() => {
-    if (percentage === 100) {
+    if (percentage === 100 && !fullyPatched) {
       setFullyPatched(true)
-      setCurrentAction('All patches installed!')
+      setCurrentAction('All patches have been installed!')
     }
-  }, [percentage])
+  }, [percentage, fullyPatched])
 
   // Fetch all available patches based on users current version
   useEffect(() => {
     if (currentVersion === 0) return
+
+    // Don't try to patch if theres a launcher update pending
+    CanWePatch().then((res) => {
+      if (!res) {
+        return
+      }
+    })
 
     axios({
       url: `https://api.nos.tw/updates?version=${currentVersion}`,

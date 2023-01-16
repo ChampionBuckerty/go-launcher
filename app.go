@@ -10,12 +10,15 @@ import (
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx      context.Context
+	CanPatch bool
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	return &App{
+		CanPatch: false,
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -37,6 +40,10 @@ func (a *App) CloseApp() {
 func (a *App) domReady(ctx context.Context) {
 	runtime.LogInfo(a.ctx, "Checking For Updates")
 	a.UpdateCheckUI()
+}
+
+func (a *App) CanWePatch() bool {
+	return a.CanPatch
 }
 
 func (a *App) UpdateCheckUI() {
@@ -67,5 +74,7 @@ func (a *App) UpdateCheckUI() {
 				a.CloseApp()
 			}
 		}
+	} else {
+		a.CanPatch = true
 	}
 }
