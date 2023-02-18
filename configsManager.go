@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -11,10 +12,23 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+type NostalgiaCustomSettings struct {
+	AltToggle bool `db:"-" json:"ALTTOGGLE"`
+	CustomRes bool `db:"-" json:"CUSTOMRES"`
+	Width     int  `db:"-" json:"WIDTH"`
+	Height    int  `db:"-" json:"HEIGHT"`
+}
+
 func (a *App) GetBasePath() string {
 	path, _ := os.Getwd()
 
 	return path
+}
+
+func (a *App) NostalgiaSettingsJsonPath() (string, error) {
+	path := a.GetBasePath()
+
+	return fmt.Sprintf("%s/%s", path, "NostalgiaSettings.json"), nil
 }
 
 func (a *App) NostalgiaIniPath() (string, error) {
@@ -27,6 +41,22 @@ func (a *App) OptionIniPath() (string, error) {
 	path := a.GetBasePath()
 
 	return fmt.Sprintf("%s/%s", path, "option.ini"), nil
+}
+
+func (a *App) ReadNostalgiaSettingsJson() NostalgiaCustomSettings {
+	jsonPath, _ := a.NostalgiaSettingsJsonPath()
+	var finalObject NostalgiaCustomSettings
+
+	// Open file
+	data, err := os.ReadFile(jsonPath)
+	if err != nil {
+		runtime.LogError(a.ctx, err.Error())
+		return finalObject
+	}
+
+	json.Unmarshal(data, &finalObject)
+
+	return finalObject
 }
 
 func (a *App) FetchGameVersion() int {

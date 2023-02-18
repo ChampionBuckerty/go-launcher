@@ -24,7 +24,7 @@ body,
   margin-top: 30px;
   margin-left: 40px;
   z-index: 1;
-  position: relative;
+  position: absolute;
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
