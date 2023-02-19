@@ -34,6 +34,8 @@ export function ReadNostalgiaSettingsJson():Promise<main.NostalgiaCustomSettings
 
 export function RemovePatchZip(arg1:string):Promise<void>;
 
+export function SaveNostalgiaSettingsJson(arg1:main.NostalgiaCustomSettings):Promise<void>;
+
 export function Unzip(arg1:string):Promise<void>;
 
 export function UpdateCheckUI():Promise<void>;

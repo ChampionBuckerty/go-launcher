@@ -7,23 +7,24 @@ import {
   IniToObject,
   ObjectToIniFile,
   ReadNostalgiaSettingsJson,
+  SaveNostalgiaSettingsJson,
 } from '../../wailsjs/go/main/App'
-import { main } from '../../wailsjs/go/models'
 
 interface Props {
   setActivePage: (activePage: Pages) => void
 }
 
 interface NostalgiaCustomSettings {
-  altToggle?: boolean
-  customRes?: boolean
-  width?: number
-  height?: number
+  altToggle: boolean
+  customRes: boolean
+  width: number
+  height: number
 }
 
 // Build a config hash - tag each field as custom or not
 
 export const Settings: React.FC<Props> = ({ setActivePage }) => {
+  const [loadedSettings, setLoadedSettings] = useState(false)
   const [optionsHash, setOptionsHash] = useState<{
     [name: string]: { [name: string]: string }
   }>({})
@@ -33,7 +34,12 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
     value: '0',
   })
   const [customConfigHash, setCustomConfigHash] =
-    useState<NostalgiaCustomSettings>({})
+    useState<NostalgiaCustomSettings>({
+      altToggle: true,
+      customRes: false,
+      width: 1024,
+      height: 768,
+    })
 
   const resolutionOptions: OptionType[] = useMemo(() => {
     return [
@@ -63,11 +69,14 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
   const loadCustomJson = async () => {
     const json = await ReadNostalgiaSettingsJson()
 
-    setCustomConfigHash({
-      altToggle: json.ALTTOGGLE,
-      customRes: json.CUSTOMRES,
-      width: json.WIDTH,
-      height: json.HEIGHT,
+    setCustomConfigHash((currentConfig) => {
+      return {
+        ...currentConfig,
+        altToggle: json.ALTTOGGLE,
+        customRes: json.CUSTOMRES,
+        width: json.WIDTH,
+        height: json.HEIGHT,
+      }
     })
 
     if (json.CUSTOMRES) {
@@ -105,6 +114,8 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
         }
 
         loadCustomJson()
+
+        setLoadedSettings(true)
       }
 
       doWork()
@@ -131,10 +142,32 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
 
     ObjectToIniFile(newHash)
     // Save JSON too
-    setActivePage(Pages.home)
-  }, [optionsHash, fullScreen, selectedResolution])
+    saveJson()
 
-  const saveJson = useCallback(() => {}, [customConfigHash])
+    setActivePage(Pages.home)
+  }, [optionsHash, fullScreen, selectedResolution, customConfigHash])
+
+  const saveJson = () => {
+    SaveNostalgiaSettingsJson({
+      ALTTOGGLE: customConfigHash.altToggle,
+      CUSTOMRES: customConfigHash.customRes,
+      WIDTH: customConfigHash.width,
+      HEIGHT: customConfigHash.height,
+    })
+  }
+
+  if (!loadedSettings) {
+    return (
+      <div className="SettingsWindow">
+        <div className="SettingsContent">
+          <div className="SettingsHeader">
+            <div className="SettingsHeaderText">Settings</div>
+          </div>
+          <div className="Options">Loading...</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="SettingsWindow">
@@ -161,15 +194,15 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
           <div className="Option">
             <div className="OptionLabel">Alt Toggle</div>
             <CustomSwitch
-              checked={customConfigHash.altToggle || false}
-              onChange={() =>
+              checked={customConfigHash.altToggle}
+              onChange={() => {
                 setCustomConfigHash((currentConfig) => {
                   return {
                     ...currentConfig,
                     altToggle: !currentConfig.altToggle,
                   }
                 })
-              }
+              }}
             />
           </div>
         </div>

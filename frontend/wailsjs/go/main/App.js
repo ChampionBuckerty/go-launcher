@@ -66,6 +66,10 @@ export function RemovePatchZip(arg1) {
   return window['go']['main']['App']['RemovePatchZip'](arg1);
 }
 
+export function SaveNostalgiaSettingsJson(arg1) {
+  return window['go']['main']['App']['SaveNostalgiaSettingsJson'](arg1);
+}
+
 export function Unzip(arg1) {
   return window['go']['main']['App']['Unzip'](arg1);
 }

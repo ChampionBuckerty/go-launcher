@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
@@ -57,6 +58,14 @@ func (a *App) ReadNostalgiaSettingsJson() NostalgiaCustomSettings {
 	json.Unmarshal(data, &finalObject)
 
 	return finalObject
+}
+
+func (a *App) SaveNostalgiaSettingsJson(settings NostalgiaCustomSettings) {
+	jsonPath, _ := a.NostalgiaSettingsJsonPath()
+
+	file, _ := json.MarshalIndent(settings, "", " ")
+
+	_ = ioutil.WriteFile(jsonPath, file, 0644)
 }
 
 func (a *App) FetchGameVersion() int {
