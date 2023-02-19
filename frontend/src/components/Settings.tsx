@@ -3,13 +3,28 @@ import CustomSwitch from './Switch'
 import CustomSelect, { OptionType } from './Select'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import './Settings.css'
-import { IniToObject, ObjectToIniFile } from '../../wailsjs/go/main/App'
+import {
+  IniToObject,
+  ObjectToIniFile,
+  ReadNostalgiaSettingsJson,
+  SaveNostalgiaSettingsJson,
+} from '../../wailsjs/go/main/App'
 
 interface Props {
   setActivePage: (activePage: Pages) => void
 }
 
+interface NostalgiaCustomSettings {
+  altToggle: boolean
+  customRes: boolean
+  width: number
+  height: number
+}
+
+// Build a config hash - tag each field as custom or not
+
 export const Settings: React.FC<Props> = ({ setActivePage }) => {
+  const [loadedSettings, setLoadedSettings] = useState(false)
   const [optionsHash, setOptionsHash] = useState<{
     [name: string]: { [name: string]: string }
   }>({})
@@ -18,6 +33,13 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
     label: '1024x768',
     value: '0',
   })
+  const [customConfigHash, setCustomConfigHash] =
+    useState<NostalgiaCustomSettings>({
+      altToggle: true,
+      customRes: false,
+      width: 1024,
+      height: 768,
+    })
 
   const resolutionOptions: OptionType[] = useMemo(() => {
     return [
@@ -37,8 +59,36 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
         label: '1600x900',
         value: '3',
       },
+      {
+        label: '1920x1080',
+        value: '1920x1080',
+      },
     ]
   }, [])
+
+  const loadCustomJson = async () => {
+    const json = await ReadNostalgiaSettingsJson()
+
+    setCustomConfigHash((currentConfig) => {
+      return {
+        ...currentConfig,
+        altToggle: json.ALTTOGGLE,
+        customRes: json.CUSTOMRES,
+        width: json.WIDTH,
+        height: json.HEIGHT,
+      }
+    })
+
+    if (json.CUSTOMRES) {
+      const newResolutionOption = resolutionOptions.find((option) => {
+        return option.value === `${json.WIDTH}x${json.HEIGHT}`
+      })
+
+      if (newResolutionOption) {
+        setSelectedResolution(newResolutionOption)
+      }
+    }
+  }
 
   useEffect(() => {
     if (Object.keys(optionsHash).length === 0) {
@@ -62,6 +112,10 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
         if (newResolutionOption) {
           setSelectedResolution(newResolutionOption)
         }
+
+        loadCustomJson()
+
+        setLoadedSettings(true)
       }
 
       doWork()
@@ -79,11 +133,41 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
     newHash['MODE']['CLIENTMODE'] = fullScreenNumber
 
     const selectedResolutionString = selectedResolution.value as string
-    newHash['MODE']['RESOLUTION'] = selectedResolutionString
+    if (selectedResolutionString.length === 1) {
+      newHash['MODE']['RESOLUTION'] = selectedResolutionString
+    } else {
+      // We have a custom value - using override
+      newHash['MODE']['RESOLUTION'] = '0'
+    }
 
     ObjectToIniFile(newHash)
+    // Save JSON too
+    saveJson()
+
     setActivePage(Pages.home)
-  }, [optionsHash, fullScreen, selectedResolution])
+  }, [optionsHash, fullScreen, selectedResolution, customConfigHash])
+
+  const saveJson = () => {
+    SaveNostalgiaSettingsJson({
+      ALTTOGGLE: customConfigHash.altToggle,
+      CUSTOMRES: customConfigHash.customRes,
+      WIDTH: customConfigHash.width,
+      HEIGHT: customConfigHash.height,
+    })
+  }
+
+  if (!loadedSettings) {
+    return (
+      <div className="SettingsWindow">
+        <div className="SettingsContent">
+          <div className="SettingsHeader">
+            <div className="SettingsHeaderText">Settings</div>
+          </div>
+          <div className="Options">Loading...</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="SettingsWindow">
@@ -105,6 +189,20 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
               options={resolutionOptions}
               value={selectedResolution?.value as string}
               onChange={setSelectedResolution}
+            />
+          </div>
+          <div className="Option">
+            <div className="OptionLabel">Alt Toggle</div>
+            <CustomSwitch
+              checked={customConfigHash.altToggle}
+              onChange={() => {
+                setCustomConfigHash((currentConfig) => {
+                  return {
+                    ...currentConfig,
+                    altToggle: !currentConfig.altToggle,
+                  }
+                })
+              }}
             />
           </div>
         </div>

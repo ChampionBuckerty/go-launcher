@@ -46,6 +46,10 @@ export function NostalgiaIniPath() {
   return window['go']['main']['App']['NostalgiaIniPath']();
 }
 
+export function NostalgiaSettingsJsonPath() {
+  return window['go']['main']['App']['NostalgiaSettingsJsonPath']();
+}
+
 export function ObjectToIniFile(arg1) {
   return window['go']['main']['App']['ObjectToIniFile'](arg1);
 }
@@ -54,8 +58,16 @@ export function OptionIniPath() {
   return window['go']['main']['App']['OptionIniPath']();
 }
 
+export function ReadNostalgiaSettingsJson() {
+  return window['go']['main']['App']['ReadNostalgiaSettingsJson']();
+}
+
 export function RemovePatchZip(arg1) {
   return window['go']['main']['App']['RemovePatchZip'](arg1);
+}
+
+export function SaveNostalgiaSettingsJson(arg1) {
+  return window['go']['main']['App']['SaveNostalgiaSettingsJson'](arg1);
 }
 
 export function Unzip(arg1) {
