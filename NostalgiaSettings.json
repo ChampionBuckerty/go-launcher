@@ -1,6 +1,6 @@
 {
- "ALTTOGGLE": true,
- "CUSTOMRES": true,
- "WIDTH": 1920,
- "HEIGHT": 1080
+  "ALTTOGGLE": false,
+  "CUSTOMRES": true,
+  "WIDTH": 1920,
+  "HEIGHT": 1080
 }

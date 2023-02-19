@@ -66,6 +66,40 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
     ]
   }, [])
 
+  const wrappedUpdateResolution = useCallback(
+    (newResolution: OptionType) => {
+      const selectedResolutionString = newResolution.value as string
+
+      if (selectedResolutionString.length != 1) {
+        const [width, height] = selectedResolutionString.split('x')
+
+        setCustomConfigHash((currentConfig) => {
+          return {
+            ...currentConfig,
+            customRes: true,
+            width: parseInt(width),
+            height: parseInt(height),
+          }
+        })
+      } else {
+        setCustomConfigHash((currentConfig) => {
+          return {
+            ...currentConfig,
+            customRes: false,
+          }
+        })
+      }
+
+      setSelectedResolution(newResolution)
+    },
+    [
+      setSelectedResolution,
+      setCustomConfigHash,
+      customConfigHash,
+      selectedResolution,
+    ],
+  )
+
   const loadCustomJson = async () => {
     const json = await ReadNostalgiaSettingsJson()
 
@@ -188,7 +222,9 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
             <CustomSelect
               options={resolutionOptions}
               value={selectedResolution?.value as string}
-              onChange={setSelectedResolution}
+              onChange={(newResolution) =>
+                wrappedUpdateResolution(newResolution)
+              }
             />
           </div>
           <div className="Option">
