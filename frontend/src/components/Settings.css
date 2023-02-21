@@ -108,3 +108,17 @@
   padding-right: 15%;
   margin-bottom: 30px;
 }
+
+.OptionInput {
+  padding: 8px;
+  font-size: medium;
+  border-radius: 4px;
+  background-color: black;
+  color: white;
+  width: 180px;
+  border: none;
+}
+
+.ReduceTopMargin {
+  margin-top: -20px;
+}

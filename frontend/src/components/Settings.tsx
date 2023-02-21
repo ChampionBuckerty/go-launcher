@@ -60,8 +60,8 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
         value: '3',
       },
       {
-        label: '1920x1080',
-        value: '1920x1080',
+        label: 'Custom',
+        value: 'Custom',
       },
     ]
   }, [])
@@ -70,15 +70,11 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
     (newResolution: OptionType) => {
       const selectedResolutionString = newResolution.value as string
 
-      if (selectedResolutionString.length != 1) {
-        const [width, height] = selectedResolutionString.split('x')
-
+      if (selectedResolutionString === 'Custom') {
         setCustomConfigHash((currentConfig) => {
           return {
             ...currentConfig,
             customRes: true,
-            width: parseInt(width),
-            height: parseInt(height),
           }
         })
       } else {
@@ -115,7 +111,7 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
 
     if (json.CUSTOMRES) {
       const newResolutionOption = resolutionOptions.find((option) => {
-        return option.value === `${json.WIDTH}x${json.HEIGHT}`
+        return option.value === 'Custom'
       })
 
       if (newResolutionOption) {
@@ -167,7 +163,7 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
     newHash['MODE']['CLIENTMODE'] = fullScreenNumber
 
     const selectedResolutionString = selectedResolution.value as string
-    if (selectedResolutionString.length === 1) {
+    if (selectedResolutionString !== 'Custom') {
       newHash['MODE']['RESOLUTION'] = selectedResolutionString
     } else {
       // We have a custom value - using override
@@ -189,6 +185,10 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
       HEIGHT: customConfigHash.height,
     })
   }
+
+  useEffect(() => {
+    console.log('!@#!@ CONFIG CHANGE:', customConfigHash)
+  }, [customConfigHash])
 
   if (!loadedSettings) {
     return (
@@ -227,6 +227,59 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
               }
             />
           </div>
+          {(selectedResolution?.value as string) === 'Custom' && (
+            <div className="Option ReduceTopMargin">
+              <div>
+                <div className="OptionLabel">Width</div>
+                <input
+                  type="number"
+                  className="OptionInput"
+                  placeholder="Enter width"
+                  value={customConfigHash.width}
+                  onChange={(event) => {
+                    setCustomConfigHash((currentConfig) => {
+                      return {
+                        ...currentConfig,
+                        width: parseInt(event.target.value),
+                      }
+                    })
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key != 'Backspace') {
+                      if (!/[0-9]/.test(event.key)) {
+                        event.preventDefault()
+                      }
+                    }
+                  }}
+                />
+              </div>
+
+              <div>
+                <div className="OptionLabel">Height</div>
+                <input
+                  type="number"
+                  className="OptionInput"
+                  placeholder="Enter height"
+                  value={customConfigHash.height}
+                  onChange={(event) => {
+                    setCustomConfigHash((currentConfig) => {
+                      return {
+                        ...currentConfig,
+                        height: parseInt(event.target.value),
+                      }
+                    })
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key != 'Backspace') {
+                      if (!/[0-9]/.test(event.key)) {
+                        event.preventDefault()
+                      }
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
           <div className="Option">
             <div className="OptionLabel">Alt Toggle</div>
             <CustomSwitch
