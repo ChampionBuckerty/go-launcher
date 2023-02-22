@@ -52,7 +52,12 @@ func (a *App) ReadNostalgiaSettingsJson() NostalgiaCustomSettings {
 	data, err := os.ReadFile(jsonPath)
 	if err != nil {
 		runtime.LogError(a.ctx, err.Error())
-		return finalObject
+		return NostalgiaCustomSettings{
+			AltToggle: false,
+			CustomRes: false,
+			Width:     1024,
+			Height:    768,
+		}
 	}
 
 	json.Unmarshal(data, &finalObject)

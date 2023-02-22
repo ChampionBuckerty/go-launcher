@@ -186,10 +186,6 @@ export const Settings: React.FC<Props> = ({ setActivePage }) => {
     })
   }
 
-  useEffect(() => {
-    console.log('!@#!@ CONFIG CHANGE:', customConfigHash)
-  }, [customConfigHash])
-
   if (!loadedSettings) {
     return (
       <div className="SettingsWindow">
